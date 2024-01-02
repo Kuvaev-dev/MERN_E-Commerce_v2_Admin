@@ -1,18 +1,26 @@
 import React, { useState } from "react";
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import { Layout, Menu, theme } from "antd";
+import { AiOutlineDashboard } from "react-icons/ai";
 import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-} from "@ant-design/icons";
-import { Layout, Menu, Button, theme } from "antd";
+  FaShoppingCart,
+  FaUser,
+  FaClipboardList,
+  FaBlog,
+} from "react-icons/fa";
+import { ImBlog } from "react-icons/im";
+import { BiSolidCategoryAlt } from "react-icons/bi";
+import { SiBrandfolder } from "react-icons/si";
+import { IoMdColorFill } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
+
 const { Header, Sider, Content } = Layout;
 const MainLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { colorBgContainer },
   } = theme.useToken();
+  const navigate = useNavigate();
   return (
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -20,22 +28,107 @@ const MainLayout = () => {
         <Menu
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={["1"]}
+          defaultSelectedKeys={[""]}
+          onClick={({ key }) => {
+            if (key == "signout") {
+            } else {
+              navigate(key);
+            }
+          }}
           items={[
             {
-              key: "1",
-              icon: <UserOutlined />,
-              label: "nav 1",
+              key: "",
+              icon: <AiOutlineDashboard className="fs-5" />,
+              label: "Dashboard",
             },
             {
-              key: "2",
-              icon: <VideoCameraOutlined />,
-              label: "nav 2",
+              key: "customers",
+              icon: <FaUser className="fs-5" />,
+              label: "Customers",
             },
             {
-              key: "3",
-              icon: <UploadOutlined />,
-              label: "nav 3",
+              key: "catalog",
+              icon: <FaShoppingCart className="fs-5" />,
+              label: "Catalog",
+              children: [
+                {
+                  key: "product",
+                  icon: <FaShoppingCart className="fs-5" />,
+                  label: "Add Product",
+                },
+                {
+                  key: "product-list",
+                  icon: <FaShoppingCart className="fs-5" />,
+                  label: "Product List",
+                },
+                {
+                  key: "brand",
+                  icon: <SiBrandfolder className="fs-5" />,
+                  label: "Brand",
+                },
+                {
+                  key: "list-brand",
+                  icon: <SiBrandfolder className="fs-5" />,
+                  label: "Brand List",
+                },
+                {
+                  key: "category",
+                  icon: <BiSolidCategoryAlt className="fs-5" />,
+                  label: "Category",
+                },
+                {
+                  key: "list-category",
+                  icon: <BiSolidCategoryAlt className="fs-5" />,
+                  label: "Category List",
+                },
+                {
+                  key: "color",
+                  icon: <IoMdColorFill className="fs-5" />,
+                  label: "Color",
+                },
+                {
+                  key: "list-color",
+                  icon: <IoMdColorFill className="fs-5" />,
+                  label: "Color List",
+                },
+              ],
+            },
+            {
+              key: "orders",
+              icon: <FaClipboardList className="fs-5" />,
+              label: "Orders",
+            },
+            {
+              key: "blog",
+              icon: <FaBlog className="fs-5" />,
+              label: "Blogs",
+              children: [
+                {
+                  key: "blog",
+                  icon: <ImBlog className="fs-5" />,
+                  label: "Add Blog",
+                },
+                {
+                  key: "blog-list",
+                  icon: <FaBlog className="fs-5" />,
+                  label: "Blog List",
+                },
+                {
+                  key: "blog-category",
+                  icon: <ImBlog className="fs-5" />,
+                  label: "Add Blog Category",
+                },
+                {
+                  key: "blog-category-list",
+                  icon: <FaBlog className="fs-5" />,
+                  label: "Blog Category List",
+                },
+              ],
+            },
+            {
+              key: "enquiries",
+              icon: <FaClipboardList className="fs-5" />,
+              label: "Enquiries",
             },
           ]}
         />
@@ -44,6 +137,7 @@ const MainLayout = () => {
         <Header
           style={{
             padding: 0,
+            background: colorBgContainer,
           }}
         >
           {React.createElement(
