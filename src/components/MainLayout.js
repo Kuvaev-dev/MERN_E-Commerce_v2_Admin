@@ -11,8 +11,8 @@ import {
 import { ImBlog } from "react-icons/im";
 import { BiSolidCategoryAlt } from "react-icons/bi";
 import { SiBrandfolder } from "react-icons/si";
-import { IoMdColorFill } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
+import { IoMdColorFill, IoIosNotifications } from "react-icons/io";
+import { useNavigate, Outlet } from "react-router-dom";
 
 const { Header, Sider, Content } = Layout;
 const MainLayout = () => {
@@ -24,7 +24,12 @@ const MainLayout = () => {
   return (
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div className="logo" />
+        <div className="logo">
+          <h2 className="text-white fs-5 text-center py-3 mb-0">
+            <span className="sm-logo">MZ</span>
+            <span className="lg-logo">MERZOST`</span>
+          </h2>
+        </div>
         <Menu
           theme="dark"
           mode="inline"
@@ -135,6 +140,7 @@ const MainLayout = () => {
       </Sider>
       <Layout className="site-layout">
         <Header
+          className="d-flex justify-content-between ps-1 pe-5"
           style={{
             padding: 0,
             background: colorBgContainer,
@@ -147,15 +153,38 @@ const MainLayout = () => {
               onClick: () => setCollapsed(!collapsed),
             }
           )}
+          <div className="d-flex gap-4 align-items-center">
+            <div className="position-relative">
+              <IoIosNotifications className="fs-4" />
+              <span className="badge bg-warning rounded-circle p-1 position-absolute">
+                1
+              </span>
+            </div>
+            <div className="d-flex gap-3 align-items-center">
+              <div>
+                <img
+                  width={32}
+                  height={32}
+                  src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/dbf03b98-b39c-4fc4-9dec-828963b6dfd0/deyu1xp-f0f85326-24a6-4fe3-bbc5-77be49647c5e.png/v1/fit/w_64,h_64,q_70,strp/skull_in_pixel_art_64x64_by_suchanames_deyu1xp-375w.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NjQwIiwicGF0aCI6IlwvZlwvZGJmMDNiOTgtYjM5Yy00ZmM0LTlkZWMtODI4OTYzYjZkZmQwXC9kZXl1MXhwLWYwZjg1MzI2LTI0YTYtNGZlMy1iYmM1LTc3YmU0OTY0N2M1ZS5wbmciLCJ3aWR0aCI6Ijw9NjQwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.JXcR28tfwdlzm97zB-eLyarVad_kXi7-RnX75rbWI3I"
+                  alt=""
+                />
+              </div>
+              <div>
+                <h5 className="mb-0">Kuvaiev</h5>
+                <p className="mb-0">kuvaiev@gmail.com</p>
+              </div>
+            </div>
+          </div>
         </Header>
         <Content
           style={{
             margin: "24px 16px",
             padding: 24,
             minHeight: 280,
+            background: colorBgContainer,
           }}
         >
-          Content
+          <Outlet />
         </Content>
       </Layout>
     </Layout>
