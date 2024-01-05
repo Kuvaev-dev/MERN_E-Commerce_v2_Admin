@@ -12,7 +12,7 @@ import { ImBlog } from "react-icons/im";
 import { BiSolidCategoryAlt } from "react-icons/bi";
 import { SiBrandfolder } from "react-icons/si";
 import { IoMdColorFill, IoIosNotifications } from "react-icons/io";
-import { useNavigate, Outlet } from "react-router-dom";
+import { useNavigate, Outlet, Link } from "react-router-dom";
 
 const { Header, Sider, Content } = Layout;
 const MainLayout = () => {
@@ -69,7 +69,7 @@ const MainLayout = () => {
                 {
                   key: "brand",
                   icon: <SiBrandfolder className="fs-5" />,
-                  label: "Brand",
+                  label: "Add Brand",
                 },
                 {
                   key: "list-brand",
@@ -79,7 +79,7 @@ const MainLayout = () => {
                 {
                   key: "category",
                   icon: <BiSolidCategoryAlt className="fs-5" />,
-                  label: "Category",
+                  label: "Add Category",
                 },
                 {
                   key: "list-category",
@@ -89,7 +89,7 @@ const MainLayout = () => {
                 {
                   key: "color",
                   icon: <IoMdColorFill className="fs-5" />,
-                  label: "Color",
+                  label: "Add Color",
                 },
                 {
                   key: "list-color",
@@ -104,7 +104,7 @@ const MainLayout = () => {
               label: "Orders",
             },
             {
-              key: "blog",
+              key: "blogs",
               icon: <FaBlog className="fs-5" />,
               label: "Blogs",
               children: [
@@ -160,7 +160,8 @@ const MainLayout = () => {
                 1
               </span>
             </div>
-            <div className="d-flex gap-3 align-items-center">
+
+            <div className="d-flex gap-3 align-items-center dropdown">
               <div>
                 <img
                   width={32}
@@ -169,9 +170,34 @@ const MainLayout = () => {
                   alt=""
                 />
               </div>
-              <div>
+              <div
+                role="button"
+                id="dropdownMenuLink"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
                 <h5 className="mb-0">Kuvaiev</h5>
                 <p className="mb-0">kuvaiev@gmail.com</p>
+              </div>
+              <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <li>
+                  <Link
+                    className="dropdown-item py-1 mb-1"
+                    style={{ height: "auto", lineHeight: "20px" }}
+                    to="/"
+                  >
+                    View Profile
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    className="dropdown-item py-1 mb-1"
+                    style={{ height: "auto", lineHeight: "20px" }}
+                    to="/"
+                  >
+                    Sign Out
+                  </Link>
+                </li>
               </div>
             </div>
           </div>
