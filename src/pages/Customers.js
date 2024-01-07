@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Table } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { getUsers } from "features/customers/customerSlice";
 
 const columns = [
   {
@@ -9,26 +11,36 @@ const columns = [
   {
     title: "Name",
     dataIndex: "name",
+    sorter: (a, b) => a.name.length - b.name.length,
   },
   {
-    title: "Product",
-    dataIndex: "product",
+    title: "Email",
+    dataIndex: "email",
   },
   {
-    title: "Status",
-    dataIndex: "status",
+    title: "Mobile",
+    dataIndex: "mobile",
   },
 ];
-const data1 = [];
-for (let i = 0; i < 46; i++) {
-  data1.push({
-    key: i,
-    name: `Edward King ${i}`,
-    product: 32,
-    staus: `London, Park Lane no. ${i}`,
-  });
-}
+
 const Customers = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getUsers());
+  }, []);
+  const customersState = useSelector((state) => state.customer.customers);
+  const data1 = [];
+  for (let i = 0; i < customersState.length; i++) {
+    if (customersState[i].role !== "admin") {
+      data1.push({
+        key: i + 1,
+        name: customersState[i].firstname + " " + customersState[i].lastname,
+        email: customersState[i].email,
+        mobile: customersState[i].mobile,
+      });
+    }
+  }
+
   return (
     <div>
       <h3 className="mb-4 title">Customers</h3>
