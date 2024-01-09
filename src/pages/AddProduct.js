@@ -1,32 +1,79 @@
 import CustomInput from "components/CustomInput";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { InboxOutlined } from "@ant-design/icons";
-import { message, Upload } from "antd";
+import { useField, useFormik } from "formik";
+import * as Yup from "yup";
+import { useDispatch, useSelector } from "react-redux";
+import { getBrands } from "features/brand/brandSlice";
+import { getCategories } from "features/productCategory/productCategorySlice";
+import Multiselect from "react-widgets/Multiselect";
+import "react-widgets/styles.css";
+import { getColors } from "features/color/colorSlice";
+import Dropzone from "react-dropzone";
+import { deleteImg, uploadImg } from "features/upload/uploadSlice";
+import { createProducts } from "features/product/productSlice";
 
-const { Dragger } = Upload;
-const props = {
-  name: "file",
-  multiple: true,
-  action: "https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188",
-  onChange(info) {
-    const { status } = info.file;
-    if (status !== "uploading") {
-      console.log(info.file, info.fileList);
-    }
-    if (status === "done") {
-      message.success(`${info.file.name} file uploaded successfully.`);
-    } else if (status === "error") {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
-  onDrop(e) {
-    console.log("Dropped files", e.dataTransfer.files);
-  },
-};
-
+let productSchema = Yup.object().shape({
+  title: Yup.string().required("Title is Required"),
+  description: Yup.string().required("Description is Required"),
+  price: Yup.number().required("Price is Required"),
+  brand: Yup.string().required("Brand is Required"),
+  productCategory: Yup.string().required("Category is Required"),
+  color: Yup.array().required("Color is Required"),
+  quantity: Yup.array().required("Quantity is Required"),
+});
 const AddProduct = () => {
+  const dispatch = useDispatch();
+  const [color, setColor] = useState([]);
+  const [images, setImages] = useState([]);
+  useEffect(() => {
+    dispatch(getBrands());
+    dispatch(getCategories());
+    dispatch(getColors());
+  }, []);
+
+  const brandState = useSelector((state) => state.brand.brands);
+  const colorState = useSelector((state) => state.color.colors);
+  const imgState = useSelector((state) => state.upload.images);
+  const productCategoryState = useSelector(
+    (state) => state.productCategory.productCategories
+  );
+  const colors = [];
+  colorState.forEach((i) => {
+    colors.push({
+      _id: i._id,
+      color: i.title,
+    });
+  });
+  const img = [];
+  imgState.forEach((i) => {
+    img.push({
+      public_id: i.public_id,
+      url: i.url,
+    });
+  });
+
+  useEffect(() => {
+    formik.values.color = color;
+    formik.values.images = img;
+  }, [color, img]);
+  const formik = useFormik({
+    initialValues: {
+      title: "",
+      description: "",
+      price: "",
+      brand: "",
+      productCategory: "",
+      color: "",
+      quantity: "",
+      images: "",
+    },
+    validationSchema: productSchema,
+    onSubmit: (values) => {
+      dispatch(createProducts(values));
+    },
+  });
   const [desc, setDesc] = useState();
   const handleDesc = (e) => {
     setDesc(e);
@@ -35,39 +82,135 @@ const AddProduct = () => {
     <div>
       <h3 className="mb-4 title">Add Product</h3>
       <div>
-        <form action="">
-          <CustomInput type="text" label="Enter Product Title" />
-          <div className="mb-3">
+        <form
+          onSubmit={formik.handleSubmit}
+          className="d-flex gap-3 flex-column"
+        >
+          <CustomInput
+            type="text"
+            label="Enter Product Title"
+            name="title"
+            onCh={formik.handleChange("title")}
+            onBlr={formik.handleBlur("title")}
+            val={formik.values.title}
+          />
+          <div className="error">
+            {formik.touched.title && formik.errors.title}
+          </div>
+          <div>
             <ReactQuill
               theme="snow"
-              value={desc}
-              onChange={(evt) => {
-                handleDesc(evt);
-              }}
+              name="description"
+              onChange={formik.handleChange("description")}
+              value={formik.values.description}
             />
           </div>
-          <CustomInput type="number" label="Enter Product Price" />
-          <select name="" id="" className="form-control py-3 mb-3">
+          <div className="error">
+            {formik.touched.description && formik.errors.description}
+          </div>
+          <CustomInput
+            type="number"
+            label="Enter Product Price"
+            name="price"
+            onCh={formik.handleChange("price")}
+            onBlr={formik.handleBlur("price")}
+            val={formik.values.price}
+          />
+          <div className="error">
+            {formik.touched.price && formik.errors.price}
+          </div>
+          <select
+            id=""
+            className="form-control py-3 mb-3"
+            name="brand"
+            onChange={formik.handleChange("brand")}
+            onBlur={formik.handleBlur("brand")}
+            value={formik.values.brand}
+          >
             <option value="">Select Brand</option>
+            {brandState.map((i, j) => {
+              return (
+                <option key={j} value={i.title}>
+                  {i.title}
+                </option>
+              );
+            })}
           </select>
-          <select name="" id="" className="form-control py-3 mb-3">
+          <div className="error">
+            {formik.touched.brand && formik.errors.brand}
+          </div>
+          <select
+            name="productCategory"
+            onChange={formik.handleChange("productCategory")}
+            onBlur={formik.handleBlur("productCategory")}
+            value={formik.values.productCategory}
+            id=""
+            className="form-control py-3 mb-3"
+          >
             <option value="">Select Category</option>
+            {productCategoryState.map((i, j) => {
+              return (
+                <option key={j} value={i.title}>
+                  {i.title}
+                </option>
+              );
+            })}
           </select>
-          <select name="" id="" className="form-control py-3 mb-3">
-            <option value="">Select Color</option>
-          </select>
-          <Dragger {...props}>
-            <p className="ant-upload-drag-icon">
-              <InboxOutlined />
-            </p>
-            <p className="ant-upload-text">
-              Click or drag file to this area to upload
-            </p>
-            <p className="ant-upload-hint">
-              Support for a single or bulk upload. Strictly prohibited from
-              uploading company data or other banned files.
-            </p>
-          </Dragger>
+          <div className="error">
+            {formik.touched.productCategory && formik.errors.productCategory}
+          </div>
+          <Multiselect
+            name="color"
+            dataKey="id"
+            textField="color"
+            data={colors}
+            onChange={(e) => setColor(e)}
+          />
+          <div className="error">
+            {formik.touched.color && formik.errors.color}
+          </div>
+          <CustomInput
+            type="number"
+            label="Enter Product Quantity"
+            name="quantity"
+            onCh={formik.handleChange("quantity")}
+            onBlr={formik.handleBlur("quantity")}
+            val={formik.values.quantity}
+          />
+          <div className="error">
+            {formik.touched.quantity && formik.errors.quantity}
+          </div>
+          <div className="bg-white border-1 p-5 text-center">
+            <Dropzone
+              onDrop={(acceptedFiles) => dispatch(uploadImg(acceptedFiles))}
+            >
+              {({ getRootProps, getInputProps }) => (
+                <section>
+                  <div {...getRootProps()}>
+                    <input {...getInputProps()} />
+                    <p>
+                      Drag 'n' drop some files here, or click to select files
+                    </p>
+                  </div>
+                </section>
+              )}
+            </Dropzone>
+          </div>
+          <div className="show-images d-flex flex-wrap gap-3">
+            {imgState?.map((i, j) => {
+              return (
+                <div className="position-relative" key={j}>
+                  <button
+                    type="button"
+                    onClick={() => dispatch(deleteImg(i.public_id))}
+                    className="btn-close position-absolute"
+                    style={{ top: "10px", right: "10px" }}
+                  ></button>
+                  <img src={i.url} alt="" width={200} height={200} />
+                </div>
+              );
+            })}
+          </div>
           <button
             type="submit"
             className="btn btn-success border-0 rounded-3 my-5"
