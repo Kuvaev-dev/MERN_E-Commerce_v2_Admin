@@ -12,6 +12,8 @@ import { ImBlog } from "react-icons/im";
 import { BiSolidCategoryAlt } from "react-icons/bi";
 import { SiBrandfolder } from "react-icons/si";
 import { IoMdColorFill, IoIosNotifications } from "react-icons/io";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useNavigate, Outlet, Link } from "react-router-dom";
 
 const { Header, Sider, Content } = Layout;
@@ -210,6 +212,17 @@ const MainLayout = () => {
             background: colorBgContainer,
           }}
         >
+          <ToastContainer
+            position="top-right"
+            autoClose={250}
+            hideProgressBar={false}
+            newestOnTop={true}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            theme="light"
+          />
           <Outlet />
         </Content>
       </Layout>
