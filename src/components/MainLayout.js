@@ -12,6 +12,8 @@ import { ImBlog } from "react-icons/im";
 import { BiSolidCategoryAlt } from "react-icons/bi";
 import { SiBrandfolder } from "react-icons/si";
 import { IoMdColorFill, IoIosNotifications } from "react-icons/io";
+import { RiCoupon3Fill } from "react-icons/ri";
+import { SiMarketo } from "react-icons/si";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate, Outlet, Link } from "react-router-dom";
@@ -104,6 +106,23 @@ const MainLayout = () => {
               key: "orders",
               icon: <FaClipboardList className="fs-5" />,
               label: "Orders",
+            },
+            {
+              key: "marketing",
+              icon: <SiMarketo className="fs-5" />,
+              label: "Marketing",
+              children: [
+                {
+                  key: "coupon",
+                  icon: <RiCoupon3Fill className="fs-5" />,
+                  label: "Add Coupon",
+                },
+                {
+                  key: "coupon-list",
+                  icon: <RiCoupon3Fill className="fs-5" />,
+                  label: "Coupon List",
+                },
+              ],
             },
             {
               key: "blogs",

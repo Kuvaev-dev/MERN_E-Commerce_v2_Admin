@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { Table } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { getBrands, resetState } from "features/brand/brandSlice";
 import { Link } from "react-router-dom";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import { getCoupons } from "features/coupon/couponSlice";
 
 const columns = [
   {
@@ -17,29 +17,37 @@ const columns = [
     sorter: (a, b) => a.name.length - b.name.length,
   },
   {
+    title: "Discount",
+    dataIndex: "discount",
+    sorter: (a, b) => a.discount - b.discount,
+  },
+  {
+    title: "Expiry",
+    dataIndex: "expiry",
+    sorter: (a, b) => a.expiry.length - b.expiry.length,
+  },
+  {
     title: "Action",
     dataIndex: "action",
   },
 ];
 
-const BrandList = () => {
+const CouponList = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(resetState());
-    dispatch(getBrands());
+    dispatch(getCoupons());
   }, []);
-  const brandState = useSelector((state) => state.brand.brands);
+  const couponState = useSelector((state) => state.coupon.coupons);
   const data1 = [];
-  for (let i = 0; i < brandState.length; i++) {
+  for (let i = 0; i < couponState.length; i++) {
     data1.push({
       key: i + 1,
-      name: brandState[i].title,
+      name: couponState[i].name,
+      expiry: new Date(couponState[i].expiry).toLocaleString(),
+      discount: couponState[i].discount,
       action: (
         <>
-          <Link
-            to={`/admin/brand/${brandState[i]._id}`}
-            className="fs-3 text-danger"
-          >
+          <Link className="fs-3 text-danger" to="/">
             <FaEdit />
           </Link>
           <Link className="fs-3 text-danger ms-3" to="/">
@@ -51,7 +59,7 @@ const BrandList = () => {
   }
   return (
     <div>
-      <h3 className="mb-4 title">Brands</h3>
+      <h3 className="mb-4 title">Coupons</h3>
       <div>
         <Table columns={columns} dataSource={data1} />
       </div>
@@ -59,4 +67,4 @@ const BrandList = () => {
   );
 };
 
-export default BrandList;
+export default CouponList;
