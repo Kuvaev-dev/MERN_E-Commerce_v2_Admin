@@ -1,10 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Table } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { getBrands, resetState } from "features/brand/brandSlice";
+import { deleteBrand, getBrands, resetState } from "features/brand/brandSlice";
 import { Link } from "react-router-dom";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import { Button, Modal, Space } from "antd";
+import CustomModal from "components/CustomModal";
 
 const columns = [
   {
@@ -23,6 +25,15 @@ const columns = [
 ];
 
 const BrandList = () => {
+  const [open, setOpen] = useState(false);
+  const [brandID, setBrandID] = useState("");
+  const showModal = (e) => {
+    setOpen(true);
+    setBrandID(e);
+  };
+  const hideModal = () => {
+    setOpen(false);
+  };
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(resetState());
@@ -42,19 +53,37 @@ const BrandList = () => {
           >
             <FaEdit />
           </Link>
-          <Link className="fs-3 text-danger ms-3" to="/">
+          <button
+            className="fs-3 text-danger ms-3 bg-transparent border-0"
+            onClick={() => showModal(brandState[i]._id)}
+          >
             <MdDelete />
-          </Link>
+          </button>
         </>
       ),
     });
   }
+  const onDeleteBrand = (e) => {
+    dispatch(deleteBrand(e));
+    setOpen(false);
+    setTimeout(() => {
+      dispatch(getBrands());
+    }, 100);
+  };
   return (
     <div>
       <h3 className="mb-4 title">Brands</h3>
       <div>
         <Table columns={columns} dataSource={data1} />
       </div>
+      <CustomModal
+        title="Are you Sure you want to Delete this Brand?"
+        hideModal={hideModal}
+        open={open}
+        performAction={() => {
+          onDeleteBrand(brandID);
+        }}
+      />
     </div>
   );
 };

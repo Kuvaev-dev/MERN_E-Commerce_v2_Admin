@@ -20,6 +20,7 @@ const AddBrand = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  
   const getBrandID = location.pathname.split("/")[3];
   const newBrand = useSelector((state) => state.brand);
   const {
@@ -41,7 +42,7 @@ const AddBrand = () => {
     if (isSuccess && createdBrand) {
       toast.success("Brand Added Successfully");
     }
-    if (isSuccess && !updatedBrand) {
+    if (isSuccess && updatedBrand) {
       toast.success("Brand Updated Successfully");
       navigate("/admin/list-brand");
     }
