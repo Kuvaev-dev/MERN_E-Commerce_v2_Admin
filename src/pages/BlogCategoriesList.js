@@ -1,10 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Table } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { getBlogCategories } from "features/blogCategory/blogCategorySlice";
+import {
+  deleteBlogCategory,
+  getBlogCategories,
+  resetState,
+} from "features/blogCategory/blogCategorySlice";
 import { Link } from "react-router-dom";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import CustomModal from "components/CustomModal";
 
 const columns = [
   {
@@ -23,8 +28,18 @@ const columns = [
 ];
 
 const BlogCategoriesList = () => {
+  const [open, setOpen] = useState(false);
+  const [blogCategoryID, setBlogCategoryID] = useState("");
+  const showModal = (e) => {
+    setOpen(true);
+    setBlogCategoryID(e);
+  };
+  const hideModal = () => {
+    setOpen(false);
+  };
   const dispatch = useDispatch();
   useEffect(() => {
+    dispatch(resetState());
     dispatch(getBlogCategories());
   }, []);
   const blogCategoryState = useSelector(
@@ -37,22 +52,43 @@ const BlogCategoriesList = () => {
       name: blogCategoryState[i].title,
       action: (
         <>
-          <Link className="fs-3 text-danger" to="/">
+          <Link
+            to={`/admin/blog-category/${blogCategoryState[i]._id}`}
+            className="fs-3 text-danger"
+          >
             <FaEdit />
           </Link>
-          <Link className="fs-3 text-danger ms-3" to="/">
+          <button
+            className="fs-3 text-danger ms-3 bg-transparent border-0"
+            onClick={() => showModal(blogCategoryState[i]._id)}
+          >
             <MdDelete />
-          </Link>
+          </button>
         </>
       ),
     });
   }
+  const onDeleteBlogCategory = (e) => {
+    dispatch(deleteBlogCategory(e));
+    setOpen(false);
+    setTimeout(() => {
+      dispatch(getBlogCategories());
+    }, 100);
+  };
   return (
     <div>
       <h3 className="mb-4 title">Blog Categories List</h3>
       <div>
         <Table columns={columns} dataSource={data1} />
       </div>
+      <CustomModal
+        title="Are you Sure you want to Delete this Blog Category?"
+        hideModal={hideModal}
+        open={open}
+        performAction={() => {
+          onDeleteBlogCategory(blogCategoryID);
+        }}
+      />
     </div>
   );
 };
