@@ -3,8 +3,7 @@ import { Table } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { getOrders } from "features/auth/authSlice";
 import { Link } from "react-router-dom";
-import { FaEdit } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
+import { FaEye } from "react-icons/fa";
 
 const columns = [
   {
@@ -44,24 +43,20 @@ const Orders = () => {
     data1.push({
       key: i + 1,
       name: orderState[i].orderby.firstname,
-      product: orderState[i].products.map((i, j) => {
-        return (
-          <>
-            <ul key={j}>
-              <li>{i.product.title}</li>
-            </ul>
-          </>
-        );
-      }),
+      product: (
+        <Link to={`/admin/order/${orderState[i].orderby._id}`}>
+          View Orders
+        </Link>
+      ),
       amount: orderState[i].paymentIntent.amount,
       date: new Date(orderState[i].createdAt).toLocaleString(),
       action: (
         <>
-          <Link className="fs-3 text-danger" to="/">
-            <FaEdit />
-          </Link>
-          <Link className="fs-3 text-danger ms-3" to="/">
-            <MdDelete />
+          <Link
+            className="fs-3 text-danger"
+            to={`/admin/order/${orderState[i]._id}`}
+          >
+            <FaEye />
           </Link>
         </>
       ),

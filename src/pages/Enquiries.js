@@ -1,9 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Table } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { getEnquiries } from "features/enquiry/enquirySlice";
+import {
+  deleteEnquiry,
+  getEnquiries,
+  resetState,
+  updateEnquiry,
+} from "features/enquiry/enquirySlice";
 import { Link } from "react-router-dom";
 import { MdDelete } from "react-icons/md";
+import { FaEye } from "react-icons/fa";
+import CustomModal from "components/CustomModal";
 
 const columns = [
   {
@@ -33,8 +40,18 @@ const columns = [
 ];
 
 const Enquiries = () => {
+  const [open, setOpen] = useState(false);
+  const [enqID, setEnqID] = useState("");
+  const showModal = (e) => {
+    setOpen(true);
+    setEnqID(e);
+  };
+  const hideModal = () => {
+    setOpen(false);
+  };
   const dispatch = useDispatch();
   useEffect(() => {
+    dispatch(resetState());
     dispatch(getEnquiries());
   }, []);
   const enquiryState = useSelector((state) => state.enquiry.enquiries);
@@ -47,26 +64,67 @@ const Enquiries = () => {
       mobile: enquiryState[i].mobile,
       status: (
         <>
-          <select className="form-control form-select" name="" id="">
-            <option value="">Set Status</option>
+          <select
+            name=""
+            defaultValue={
+              enquiryState[i].status ? enquiryState[i].status : "Submitted"
+            }
+            className="form-control form-select"
+            id=""
+            onChange={(e) =>
+              setEnquiryStatus(e.target.value, enquiryState[i]._id)
+            }
+          >
+            <option value="Submitted">Submitted</option>
+            <option value="Contacted">Contacted</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Resolved">Resolved</option>
           </select>
         </>
       ),
       action: (
         <>
-          <Link className="fs-3 text-danger ms-3" to="/">
-            <MdDelete />
+          <Link
+            className="ms-3 fs-3 text-danger"
+            to={`/admin/enquiries/${enquiryState[i]._id}`}
+          >
+            <FaEye />
           </Link>
+          <button
+            className="ms-3 fs-3 text-danger bg-transparent border-0"
+            onClick={() => showModal(enquiryState[i]._id)}
+          >
+            <MdDelete />
+          </button>
         </>
       ),
     });
   }
+  const setEnquiryStatus = (e, i) => {
+    const data = { id: i, enqData: e };
+    dispatch(updateEnquiry(data));
+  };
+  const onDeleteEnq = (e) => {
+    dispatch(deleteEnquiry(e));
+    setOpen(false);
+    setTimeout(() => {
+      dispatch(getEnquiries());
+    }, 3000);
+  };
   return (
     <div>
       <h3 className="mb-4 title">Enquiries</h3>
       <div>
         <Table columns={columns} dataSource={data1} />
       </div>
+      <CustomModal
+        hideModal={hideModal}
+        open={open}
+        performAction={() => {
+          onDeleteEnq(enqID);
+        }}
+        title="Are you Sure you want to Delete this Enquiry?"
+      />
     </div>
   );
 };
