@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BsArrowDownRight } from "react-icons/bs";
 import { Column } from "@ant-design/plots";
 import { Table } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { getMonthlyData } from "features/auth/authSlice";
 
 const columns = [
   {
@@ -31,60 +33,41 @@ for (let i = 0; i < 46; i++) {
   });
 }
 const Dashboard = () => {
-  const data = [
-    {
-      type: "Jan",
-      sales: 38,
-    },
-    {
-      type: "Feb",
-      sales: 52,
-    },
-    {
-      type: "Mar",
-      sales: 61,
-    },
-    {
-      type: "Apr",
-      sales: 145,
-    },
-    {
-      type: "May",
-      sales: 48,
-    },
-    {
-      type: "Jun",
-      sales: 38,
-    },
-    {
-      type: "July",
-      sales: 38,
-    },
-    {
-      type: "Aug",
-      sales: 38,
-    },
-    {
-      type: "Sept",
-      sales: 38,
-    },
-    {
-      type: "Oct",
-      sales: 38,
-    },
-    {
-      type: "Nov",
-      sales: 38,
-    },
-    {
-      type: "Dec",
-      sales: 38,
-    },
-  ];
+  const [dataMonthly, setDataMonthly] = useState([]);
+  const dispatch = useDispatch();
+  const monthlyDataState = useSelector((state) => state.auth.monthlyData);
+  useEffect(() => {
+    dispatch(getMonthlyData());
+  }, []);
+  useEffect(() => {
+    let monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    let data = [];
+    for (let index = 0; index < monthlyDataState?.length; index++) {
+      const element = monthlyDataState[index];
+      data.push({
+        type: monthNames[element?._id?.month],
+        income: element?.count,
+      });
+    }
+    setDataMonthly(data);
+  }, [monthlyDataState]);
   const config = {
-    data,
+    data: dataMonthly,
     xField: "type",
-    yField: "sales",
+    yField: "income",
     color: ({ type }) => {
       return "#ffd333";
     },
