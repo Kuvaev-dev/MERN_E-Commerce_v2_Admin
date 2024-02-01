@@ -32,11 +32,20 @@ const getMonthlyOrders = async () => {
   return response.data;
 };
 
+const getYearlyStats = async () => {
+  const response = await axios.get(
+    `${base_url}user/getyearlyorders`,
+    config
+  );
+  return response.data;
+};
+
 const authService = {
   login,
   getOrders,
   getSingleOrder,
   getMonthlyOrders,
+  getYearlyStats,
 };
 
 export default authService;
