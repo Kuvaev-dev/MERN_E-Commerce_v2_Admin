@@ -86,7 +86,7 @@ const Dashboard = () => {
       });
     }
     setOrderData(data1);
-  }, [monthlyDataState, yearlyDataState]);
+  }, [orderState]);
   const config = {
     data: dataMonthly,
     xField: "type",

@@ -8,7 +8,7 @@ import {
   FaClipboardList,
   FaBlog,
 } from "react-icons/fa";
-import { ImBlog } from "react-icons/im";
+import { ImBlog, ImExit } from "react-icons/im";
 import { BiSolidCategoryAlt } from "react-icons/bi";
 import { SiBrandfolder } from "react-icons/si";
 import { IoMdColorFill, IoIosNotifications } from "react-icons/io";
@@ -40,6 +40,8 @@ const MainLayout = () => {
           defaultSelectedKeys={[""]}
           onClick={({ key }) => {
             if (key === "signout") {
+              localStorage.clear();
+              window.location.reload()
             } else {
               navigate(key);
             }
@@ -155,6 +157,11 @@ const MainLayout = () => {
               key: "enquiries",
               icon: <FaClipboardList className="fs-5" />,
               label: "Enquiries",
+            },
+            {
+              key: "signout",
+              icon: <ImExit className="fs-5" />,
+              label: "SIgn Out",
             },
           ]}
         />

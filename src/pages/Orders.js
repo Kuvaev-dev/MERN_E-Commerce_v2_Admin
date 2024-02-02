@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Table } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { getOrders } from "features/auth/authSlice";
+import { getOrders, updateOrder } from "features/auth/authSlice";
 import { Link } from "react-router-dom";
 import { FaEye } from "react-icons/fa";
 
@@ -37,31 +37,43 @@ const Orders = () => {
   useEffect(() => {
     dispatch(getOrders());
   }, []);
-  const orderState = useSelector((state) => state.auth.orders);
+  const orderState = useSelector((state) => state.auth.orders.orders);
   const data1 = [];
-  for (let i = 0; i < orderState.length; i++) {
+  for (let i = 0; i < orderState?.length; i++) {
     data1.push({
       key: i + 1,
-      name: orderState[i].orderby.firstname,
+      name: orderState[i]?.user?.firstname,
       product: (
-        <Link to={`/admin/order/${orderState[i].orderby._id}`}>
-          View Orders
-        </Link>
+        <Link to={`/admin/order/${orderState[i]?._id}`}>View Orders</Link>
       ),
-      amount: orderState[i].paymentIntent.amount,
-      date: new Date(orderState[i].createdAt).toLocaleString(),
+      amount: orderState[i]?.totalPrice,
+      date: new Date(orderState[i]?.createdAt).toLocaleString(),
       action: (
         <>
-          <Link
-            className="fs-3 text-danger"
-            to={`/admin/order/${orderState[i]._id}`}
+          <select
+            defaultValue={orderState[i]?.status}
+            onChange={(e) =>
+              updateOrderStatus(orderState[i]?._id, e.target.value)
+            }
+            name=""
+            id=""
+            className="form-control form-select"
           >
-            <FaEye />
-          </Link>
+            <option value="Ordered" disabled selected>
+              Ordered
+            </option>
+            <option value="Processed">Processed</option>
+            <option value="Shipped">Shipped</option>
+            <option value="Out For Delivery">Out For Delivery</option>
+            <option value="Delivered">Delivered</option>
+          </select>
         </>
       ),
     });
   }
+  const updateOrderStatus = (a, b) => {
+    dispatch(updateOrder({ id: a, status: b }));
+  };
   return (
     <div>
       <h3 className="mb-4 title">Orders</h3>
